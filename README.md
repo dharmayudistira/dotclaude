@@ -1,68 +1,60 @@
 # dotclaude
 
-My personal Claude Code configuration — a two-layer setup that makes Claude a reliable engineering partner across all my projects, not just a code generator.
+My personal Claude Code configuration. A two-layer setup that makes Claude a reliable engineering partner across all my projects, not just a code generator.
 
 ## How it works
 
+Configuration is split by scope. Rules that hold everywhere live at the global layer. Rules that only make sense inside one codebase live with that codebase.
+
 ```
 dotclaude/
-├── CLAUDE.md                        ← global rules (applies everywhere)
-└── truequity/
-    ├── CLAUDE.md                    ← project-level config
-    └── .claude/
-        ├── rules/                   ← per-domain rule files
-        ├── agents/                  ← subagent definitions
-        └── commands/                ← slash commands
+└── CLAUDE.md        ← global rules (applies everywhere)
+
+your-project/
+├── CLAUDE.md        ← project-level config
+└── .claude/         ← per-project Claude setup
 ```
 
 ### Layer 1: Global (`CLAUDE.md`)
 
-Defines how Claude should think and communicate regardless of project — mindset, code principles, communication style, safety guardrails, commit format, and tool preferences. This applies to every session across every codebase.
+This repo. Defines how Claude should think and communicate regardless of project: mindset, code principles, communication style, safety guardrails, commit format, and tool preferences. It applies to every session across every codebase.
 
-### Layer 2: Per-project (e.g. `truequity/`)
+The four-point structure is adopted from Andrej Karpathy's CLAUDE.md, with my own conventions layered on top. The sections are deliberately ordered. Think before coding, then simplicity first, then surgical changes, then goal-driven execution. Each one constrains the next.
 
-Layers in project-specific context: architecture overview, routing conventions, data layer patterns, env vars, and links to domain rule files. Claude reads the relevant rule file before touching anything in that domain — no guessing, no context drift.
+### Layer 2: Per-project
 
-## Truequity config
+Lives in the project repo, not here. It layers in what the global rules cannot know: architecture overview, conventions, data layer patterns, env vars, and anything else specific to that codebase. Whatever Claude setup a project needs goes in its `.claude/` directory, scoped to that project alone.
 
-[Truequity](https://github.com/dharmayudistira/truequity) is a solo-built multi-currency wealth tracker for Indonesian retail investors (IDX stocks, US equities, crypto).
+## Workflow
 
-### Rule files (`.claude/rules/`)
+How a feature actually moves from idea to production.
 
-| File | Covers |
-|------|--------|
-| `code-conventions.md` | File naming, imports, component structure, strict TS |
-| `state-management.md` | TanStack Query patterns, hook quad pattern, context vs local state |
-| `database.md` | Migration workflow, RLS policies, naming conventions |
-| `error-handling.md` | Result<T,E> via neverthrow, boundary rules, anti-patterns |
-| `ui-patterns.md` | shadcn/ui, Tailwind v4, forms with RHF + zod, Recharts |
-| `security.md` | Auth gate, three Supabase clients, env var rules, AI endpoint guard |
-| `deployment.md` | Two-env setup, CI/CD topology, migration deployment, rollback |
+```mermaid
+flowchart LR
+    A[Planning] --> B[Hi-fi Design]
 
-### Subagents (`.claude/agents/`)
+    subgraph CC [Claude Code]
+        direction LR
+        C[Frontend / Mobile] <--> D[Backend]
+        D <--> E[Testing]
+    end
 
-| Agent | Role |
-|-------|------|
-| `feature-builder` | Full vertical slice from roadmap task: migration to types to hook to page |
-| `reviewer` | Independent diff review against the rules. Read-only, used before merge |
-| `db-architect` | SQL, migrations, RLS, indexes specialist |
-| `infra-ops` | CI/CD, GitHub Actions, Edge Functions, Vercel config |
+    B --> C
+    E --> F[Deploy]
+```
 
-### Slash commands (`.claude/commands/`)
+**Planning.** Finalize the PRD, break it into issues on the tracker, set up the initial project.
 
-| Command | Does |
-|---------|------|
-| `/new-feature <task-id>` | Pull roadmap task, branch, scaffold via feature-builder, run gate |
-| `/migrate <name>` | Create timestamped migration file with standard template |
-| `/types` | Regenerate `database.ts` from local schema |
-| `/review [base-branch]` | Run lint + typecheck, invoke reviewer subagent |
-| `/check` | Fast local gate: lint + typecheck + build |
-| `/deploy` | Preflight checks before merging to main |
+**Hi-fi design.** Turn the PRD into a high fidelity design before any code exists. Built with Claude Design and Stitch.
+
+**Build.** Claude Code owns the implementation loop. Frontend, backend, and testing move together rather than in sequence, so a change on one side is reconciled against the others immediately. Testing covers both unit and E2E.
+
+**Deploy.**
 
 ## Philosophy
 
-The goal is not to make Claude do more — it is to make Claude predictable. A well-structured config means I can hand off a full feature and trust the output meets the same bar as a senior engineer review, without having to re-explain the architecture every session.
+The goal is not to make Claude do more. It is to make Claude predictable. A well-structured config means I can hand off a full feature and trust the output meets the same bar as a senior engineer review, without having to re-explain the architecture every session.
 
 ## Author
 
-[Dharma Yudistira](https://dharma-yudistira.com) — Fullstack and Flutter Engineer based in Sidoarjo, Indonesia.
+[Dharma Yudistira](https://dharma-yudistira.com), Fullstack and Flutter Engineer based in Sidoarjo, Indonesia.

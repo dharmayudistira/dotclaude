@@ -82,5 +82,6 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 - Errors: state what it means, likely causes ranked by probability, concrete fixes.
 - Commits: `prefix(scope): concise message`. Prefixes: `feat`, `fix`, `refactor`, `chore`. No AI attribution in commits, PRs, or code.
 - Tools: search `rg`, find `fd`, visualize `tree`.
+- Visualization: ASCII in discussion (architecture, data flow, state machines, directory structure), in a fenced code block. Mermaid only in documentation and artifacts.
 
 @RTK.md

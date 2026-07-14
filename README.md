@@ -51,6 +51,25 @@ flowchart LR
 
 **Deploy.**
 
+### Inside the build loop
+
+The build phase runs on [Matt Pocock's skills](https://github.com/mattpocock/skills). Each step hands a written artifact to the next, so intent survives across sessions instead of living in one chat.
+
+```mermaid
+flowchart LR
+    A["/wayfinder<br>or<br>/grill-with-docs"] --> B["/to-spec"] --> C["/to-tickets"] --> D["/implement"] --> E["/code-review"]
+```
+
+**1. Frame it.** `/wayfinder` for multi-session work that needs investigation first. `/grill-with-docs` when the domain model matters and I want to be interrogated until it holds up.
+
+**2. `/to-spec`.** Turn the conversation into a spec on the issue tracker.
+
+**3. `/to-tickets`.** Break the spec into tracer-bullet tickets with explicit blocking dependencies.
+
+**4. `/implement`.** Build a ticket, driving TDD at the seams.
+
+**5. `/code-review`.** Review on two axes: does it follow the repo's standards, and does it match what the spec asked for.
+
 ## Philosophy
 
 The goal is not to make Claude do more. It is to make Claude predictable. A well-structured config means I can hand off a full feature and trust the output meets the same bar as a senior engineer review, without having to re-explain the architecture every session.

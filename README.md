@@ -27,48 +27,32 @@ Lives in the project repo, not here. It layers in what the global rules cannot k
 
 ## Workflow
 
-How a feature actually moves from idea to production.
+How a product actually moves from idea to production. The pipeline runs on [BuilderOS](https://github.com/BuildGreatProducts/builder-os). Its skills share a `docs/` folder, so each stage hands a written artifact to the next and intent survives across sessions instead of living in one chat.
 
 ```mermaid
 flowchart LR
-    A[Planning] --> B[Hi-fi Design]
-
-    subgraph CC [Claude Code]
-        direction LR
-        C[Frontend / Mobile] <--> D[Backend]
-        D <--> E[Testing]
-    end
-
-    B --> C
-    E --> F[Deploy]
+    A[Ideate] --> B[Plan and design] --> C[Build] --> D[Launch]
 ```
 
-**Planning.** Finalize the PRD, break it into issues on the tracker, set up the initial project.
+### 1. Ideate
 
-**Hi-fi design.** Turn the PRD into a high fidelity design before any code exists. Built with Claude Design and Stitch.
+`/idea-generator` mines what I already know or do for a product idea. `/idea-validator` pressure-tests it before I invest in building: finds the core assumption, ranks fatal flaws, maps real competition.
 
-**Build.** Claude Code owns the implementation loop. Frontend, backend, and testing move together rather than in sequence, so a change on one side is reconciled against the others immediately. Testing covers both unit and E2E.
+### 2. Plan and design
 
-**Deploy.**
+`/product-planner` runs a vision intake conversation, then writes strategy, technical specs, and a phased build plan with task checkboxes. That plan is what the build stage consumes.
 
-### Inside the build loop
+`/design-system` turns screenshots, mockups, or Figma URLs into a design system in Google's open `design.md` format. Hi-fi screens come from Claude Design and Stitch, before any code exists.
 
-The build phase runs on [Matt Pocock's skills](https://github.com/mattpocock/skills). Each step hands a written artifact to the next, so intent survives across sessions instead of living in one chat.
+### 3. Build
 
-```mermaid
-flowchart LR
-    A["/wayfinder<br>or<br>/grill-with-docs"] --> B["/to-spec"] --> C["/to-tickets"] --> D["/implement"] --> E["/code-review"]
-```
+`/build-mvp` works the roadmap end to end, implementing, testing, and verifying each task before moving on. `/build-loop-claude-code` for a single pass with review gates, so nothing ships on "it compiles."
 
-**1. Frame it.** `/wayfinder` for multi-session work that needs investigation first. `/grill-with-docs` when the domain model matters and I want to be interrogated until it holds up.
+Frontend, backend, and testing move together rather than in sequence, so a change on one side is reconciled against the others immediately. Testing covers both unit and E2E. `/design-better` is the craft layer for generating or reviewing UI that is designed, not just functional.
 
-**2. `/to-spec`.** Turn the conversation into a spec on the issue tracker.
+### 4. Launch
 
-**3. `/to-tickets`.** Break the spec into tracer-bullet tickets with explicit blocking dependencies.
-
-**4. `/implement`.** Build a ticket, driving TDD at the seams.
-
-**5. `/code-review`.** Review on two axes: does it follow the repo's standards, and does it match what the spec asked for.
+`/launch-checklist` audits the codebase (stack, services, env vars, payments, deploy config) and writes a plain-English, step-by-step path to ship.
 
 ## Philosophy
 
